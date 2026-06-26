@@ -658,3 +658,63 @@ window.projectsData = [
     featured: false
   }
 ];
+
+window.projectsData = window.projectsData.map((project) => {
+  const title = project.title || project.name;
+  const tools = Array.isArray(project.tools) ? project.tools : [];
+  const skills = Array.isArray(project.skillsDemonstrated) ? project.skillsDemonstrated : [];
+  const architecture =
+    project.architecture && typeof project.architecture === "object"
+      ? project.architecture
+      : {
+          summary: project.architecture || project.description,
+          components: tools.slice(0, 6).map((tool) => `${tool} is part of the project architecture or delivery workflow.`),
+          diagramSrc: "",
+          diagramAlt: `${title} architecture diagram`
+        };
+
+  const implementationSteps = (Array.isArray(project.implementationSteps) ? project.implementationSteps : []).map((step) => {
+    if (step && typeof step === "object") return step;
+    return {
+      title: String(step).replace(/\.$/, ""),
+      description: "Part of the documented project implementation flow.",
+      tools: []
+    };
+  });
+
+  const skillEvidence = (skill) => {
+    if (skill && typeof skill === "object") return skill;
+    const name = String(skill);
+    return {
+      name,
+      evidence: `Demonstrated through the ${title} architecture, implementation steps, and documented project workflow.`
+    };
+  };
+
+  return {
+    liveDemoUrl: "",
+    architectureUrl: "",
+    articleUrl: "",
+    toolGroups: project.toolGroups || [],
+    screenshots: project.screenshots || [],
+    implementationSummary: project.implementationSummary || [
+      `${title} is structured as a recruiter-friendly technical case study showing how the architecture, tools, and implementation steps fit together.`,
+      "The project focuses on reviewable engineering evidence rather than unsupported business metrics."
+    ],
+    star: project.star || {
+      situation:
+        `Teams need repeatable ${project.category.toLowerCase()} patterns that can be reviewed, maintained, and improved without relying on undocumented manual work.`,
+      task:
+        `Design or document a production-style reference project that demonstrates ${skills.map((skill) => (typeof skill === "string" ? skill : skill.name)).slice(0, 3).join(", ").toLowerCase() || "cloud engineering capability"}.`,
+      action:
+        project.architecture && typeof project.architecture === "string" ? project.architecture : project.description,
+      result:
+        "Provides a recruiter-friendly case study of practical cloud, DevOps, and platform engineering capability without claiming unmeasured production metrics."
+    },
+    ...project,
+    architecture,
+    implementationSteps,
+    skillsDemonstrated: skills.map(skillEvidence),
+    screenshots: project.screenshots || []
+  };
+});

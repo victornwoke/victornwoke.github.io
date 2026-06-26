@@ -656,105 +656,206 @@
     const mvpFeatures = arrayFrom(item.features);
     const monetizationOptions = arrayFrom(item.monetizationOptions, [item.monetization]);
     const roadmap = arrayFrom(item.roadmap, [`Current: ${item.status}`]);
+    const productCtas = itemCtas(item, "product");
     const relatedItems = arrayFrom(item.relatedItems, [
       { name: "Engineering Projects", href: "/projects/", type: "Project" },
       { name: "Products", href: "/products/", type: "Product" }
     ]);
+    const productStory = item.story || {
+      problem: problemPoints[0] || item.description,
+      audience: item.targetUser,
+      offer: item.valueProposition || item.description,
+      outcome:
+        "Gives the target user a clearer, more practical way to assess readiness, document a workflow, or decide the next operational action."
+    };
+    const liveLinks = productCtas.filter((cta) => cta.label !== "View Product" && cta.label !== "Open Product Page");
 
     return `
-      <section class="hero detail-hero">
-        <div class="detail-hero-grid">
-          <div class="detail-hero-content">
-            <span class="kicker">Product</span>
+      <section class="hero project-hero product-case-hero">
+        <div class="project-hero-grid">
+          <div class="project-hero-copy">
+            <span class="kicker">Product Lab</span>
             <h1>${titleOf(item)}</h1>
             <p class="hero-copy">${item.valueProposition || item.description}</p>
             <div class="status-row">
               <span class="pill ${statusClass(item.status)}">${item.status}</span>
               <span class="pill">${item.category}</span>
-              <span class="pill">Production Readiness</span>
+              ${arrayFrom(item.tags).slice(0, 4).map((tag) => `<span class="pill">${tag}</span>`).join("")}
             </div>
             <div class="hero-actions">
-              <a class="button primary" href="/#contact">Request Product Audit</a>
+              ${buttonMarkup(productCtas, 2).replaceAll("text-link", "button")}
               <a class="button" href="/products/">Back to Products</a>
             </div>
           </div>
-          <aside class="product-visual-card" aria-label="${titleOf(item)} product preview">
-            <div class="visual-score">MVP</div>
-            <div class="visual-list">
-              ${whatItDoes.slice(0, 5).map((feature) => `<span>${feature}</span>`).join("")}
-            </div>
+          <aside class="project-summary-card" aria-label="${titleOf(item)} product summary">
+            <span class="summary-eyebrow">Product Snapshot</span>
+            <dl>
+              <div><dt>Status</dt><dd>${item.status}</dd></div>
+              <div><dt>Category</dt><dd>${item.category}</dd></div>
+              <div><dt>Target user</dt><dd>${item.targetUser}</dd></div>
+              <div><dt>Monetization</dt><dd>${item.monetization}</dd></div>
+              ${validLink(item.liveUrl) ? `<div><dt>Live app</dt><dd><a href="${item.liveUrl}">Available online</a></dd></div>` : ""}
+            </dl>
           </aside>
         </div>
       </section>
 
-      <article class="container detail-article">
-        <section class="split-section">
-          <div>
-            <span class="kicker">Problem</span>
-            <h2>The launch gap this product addresses</h2>
-            <p class="section-copy">${item.description}</p>
-          </div>
-          <ul class="check-list">${problemPoints.map((point) => `<li>${point}</li>`).join("")}</ul>
-        </section>
+      <article class="container case-study product-case-study">
+        <div class="case-study-layout">
+          <aside class="case-sidebar">
+            <div class="sidebar-panel">
+              <span class="summary-eyebrow">At a Glance</span>
+              <dl>
+                <div><dt>Status</dt><dd>${item.status}</dd></div>
+                <div><dt>Category</dt><dd>${item.category}</dd></div>
+                <div><dt>Audience</dt><dd>${shortList(targetUsers, 4)}</dd></div>
+                <div><dt>Business model</dt><dd>${item.monetization}</dd></div>
+              </dl>
+            </div>
+          </aside>
 
-        <section>
-          <div class="section-head">
-            <h2>Target Users</h2>
-            <p>The people this product is designed to help first.</p>
-          </div>
-          <div class="compact-grid">${simpleCards(targetUsers)}</div>
-        </section>
+          <div class="case-main">
+            <section class="case-section star-section">
+              <div class="case-section-head">
+                <span class="kicker">Product Narrative</span>
+                <h2>Product Story</h2>
+                <p>A concise view of the customer pain, audience, offer, and practical outcome.</p>
+              </div>
+              <div class="star-grid">
+                ${[
+                  ["Problem", productStory.problem],
+                  ["Audience", productStory.audience],
+                  ["Offer", productStory.offer],
+                  ["Outcome", productStory.outcome]
+                ]
+                  .map(
+                    ([title, body]) => `
+                      <article class="star-card">
+                        <span>${title}</span>
+                        <p>${body}</p>
+                      </article>
+                    `
+                  )
+                  .join("")}
+              </div>
+            </section>
 
-        <section>
-          <div class="section-head">
-            <h2>What the Product Does</h2>
-            <p>Core capabilities kept practical, audit-focused, and easy to understand.</p>
-          </div>
-          <div class="feature-grid">${featureCards(whatItDoes)}</div>
-        </section>
+            <section class="case-section">
+              <div class="case-section-head">
+                <span class="kicker">Customer Pain</span>
+                <h2>Problem This Product Addresses</h2>
+                <p>The product is framed around a clear operational, readiness, documentation, or business workflow gap.</p>
+              </div>
+              <ul class="check-list">${problemPoints.map((point) => `<li>${point}</li>`).join("")}</ul>
+            </section>
 
-        <section>
-          <div class="section-head">
-            <h2>MVP Features</h2>
-            <p>The current or planned feature set for the first useful product version.</p>
-          </div>
-          <div class="feature-grid">${featureCards(mvpFeatures)}</div>
-        </section>
+            <section class="case-section">
+              <div class="case-section-head">
+                <span class="kicker">Users</span>
+                <h2>Target Users</h2>
+                <p>The first audience segments this product is designed to help.</p>
+              </div>
+              <div class="skill-grid">${targetUsers.map((user) => `<article class="skill-card"><h3>${user}</h3><p>Primary audience segment for ${titleOf(item)}.</p></article>`).join("")}</div>
+            </section>
 
-        <section class="business-model">
-          <div>
-            <span class="kicker">Business Model</span>
-            <h2>Monetization Model</h2>
-            <p class="section-copy">${item.monetization}</p>
-          </div>
-          <ul class="check-list">${monetizationOptions.map((option) => `<li>${option}</li>`).join("")}</ul>
-        </section>
+            <section class="case-section">
+              <div class="case-section-head">
+                <span class="kicker">Workflow</span>
+                <h2>What the Product Does</h2>
+                <p>Core product capabilities kept practical, focused, and easy to evaluate.</p>
+              </div>
+              <div class="tool-group-grid">
+                ${whatItDoes
+                  .map(
+                    (feature) => `
+                      <article class="tool-group-card">
+                        <h3>${feature}</h3>
+                        <p>Included in the product workflow or planned readiness experience.</p>
+                      </article>
+                    `
+                  )
+                  .join("")}
+              </div>
+            </section>
 
-        <section class="split-section">
-          <div>
-            <span class="kicker">Status</span>
-            <h2>Status / Roadmap</h2>
-            <p class="section-copy">The product roadmap stays intentionally practical: validate the pain, improve the report, and deepen the readiness checks.</p>
-          </div>
-          <ol class="timeline-list">${roadmap.map((step) => `<li>${step}</li>`).join("")}</ol>
-        </section>
+            <section class="case-section">
+              <div class="case-section-head">
+                <span class="kicker">MVP</span>
+                <h2>MVP Features</h2>
+                <p>The current or planned feature set for the first useful version.</p>
+              </div>
+              <div class="skill-grid">${mvpFeatures.map((feature) => `<article class="skill-card"><h3>${feature}</h3><p>Part of the MVP scope or near-term product validation path.</p></article>`).join("")}</div>
+            </section>
 
-        <section>
-          <div class="section-head">
-            <h2>Related Products and Projects</h2>
-            <p>Connected products and engineering case studies that support the same readiness, DevOps, and cloud operations themes.</p>
-          </div>
-          <div class="related-grid">${relatedCards(relatedItems)}</div>
-        </section>
+            <section class="case-section">
+              <div class="case-section-head">
+                <span class="kicker">Business Model</span>
+                <h2>Monetization Model</h2>
+                <p>${item.monetization}</p>
+              </div>
+              <div class="tool-group-grid">${monetizationOptions.map((option) => `<article class="tool-group-card"><h3>${option}</h3><p>Potential route for packaging product value into a paid offer.</p></article>`).join("")}</div>
+            </section>
 
-        <section class="final-cta">
-          <h2>Need a production-readiness review before launch?</h2>
-          <p>If you are building an AI app, SaaS product, or cloud-hosted system, request a practical readiness audit before going live.</p>
-          <div class="cta-actions">
-            <a class="text-link primary" href="/#contact">Request Product Audit</a>
-            <a class="text-link" href="/products/">View Products</a>
+            <section class="case-section">
+              <div class="case-section-head">
+                <span class="kicker">Roadmap</span>
+                <h2>Status / Roadmap</h2>
+                <p>The roadmap stays practical: validate the pain, improve the product experience, and deepen the useful output.</p>
+              </div>
+              <ol class="process-timeline">
+                ${roadmap
+                  .map(
+                    (step, index) => `
+                      <li>
+                        <div class="step-number">${String(index + 1).padStart(2, "0")}</div>
+                        <div><h3>${step.replace(/^[^:]+:\\s*/, "")}</h3><p>${step}</p></div>
+                      </li>
+                    `
+                  )
+                  .join("")}
+              </ol>
+            </section>
+
+            <section class="case-section links-section">
+              <div class="case-section-head">
+                <span class="kicker">Links</span>
+                <h2>Product Links</h2>
+                <p>Only real available links are shown here. Empty, private, or missing links are suppressed.</p>
+              </div>
+              <div class="links-grid">
+                <article class="repo-card">
+                  <span class="pill ${validLink(item.liveUrl) ? "live" : "soon"}">${validLink(item.liveUrl) ? "Live product available" : "Product link coming soon"}</span>
+                  <h3>${validLink(item.liveUrl) ? "Open the live product" : "Public product experience not live yet"}</h3>
+                  <p>${validLink(item.liveUrl) ? "The live product can be opened directly from this page." : "This product is still being validated, packaged, or prepared for public access."}</p>
+                  <div class="link-row">${buttonMarkup(liveLinks, 5) || `<span class="tag">No extra public links yet</span>`}</div>
+                </article>
+                <article class="repo-card">
+                  <span class="pill">Product context</span>
+                  <h3>Why it belongs in the Product Lab</h3>
+                  <p>${item.revenueExperiment ? "This is being treated as a revenue experiment with buyer pain and monetization validation." : "This is part of the product portfolio because it packages a practical workflow into a reusable tool or offer."}</p>
+                </article>
+              </div>
+            </section>
+
+            <section class="case-section related-section">
+              <div class="case-section-head">
+                <span class="kicker">Related Work</span>
+                <h2>Related Products and Projects</h2>
+                <p>Connected products and engineering case studies that support the same readiness, cloud, DevOps, security, or automation themes.</p>
+              </div>
+              <div class="related-grid case-related-grid">${relatedCards(relatedItems)}</div>
+            </section>
+
+            <section class="final-cta case-final-cta">
+              <h2>Need a product or app readiness review?</h2>
+              <p>If you are building an AI app, SaaS product, cloud-hosted system, or business automation tool, request a practical product audit before launch.</p>
+              <div class="link-row">
+                <a class="text-link primary" href="/#contact">Request Product Audit</a>
+                <a class="text-link" href="/products/">View All Products</a>
+              </div>
+            </section>
           </div>
-        </section>
+        </div>
       </article>
     `;
   }

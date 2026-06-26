@@ -221,3 +221,51 @@ window.productsData = [
     revenueExperiment: true
   }
 ];
+
+window.productsData = window.productsData.map((product) => {
+  const name = product.name;
+  const targetUsers = Array.isArray(product.targetUsers) && product.targetUsers.length ? product.targetUsers : [product.targetUser].filter(Boolean);
+  const problemPoints =
+    Array.isArray(product.problemPoints) && product.problemPoints.length
+      ? product.problemPoints
+      : [product.description || `${name} addresses a practical workflow or readiness gap for its target users.`];
+  const features = Array.isArray(product.features) && product.features.length ? product.features : [];
+  const whatItDoes = Array.isArray(product.whatItDoes) && product.whatItDoes.length ? product.whatItDoes : features;
+  const monetizationOptions =
+    Array.isArray(product.monetizationOptions) && product.monetizationOptions.length
+      ? product.monetizationOptions
+      : [product.monetization].filter(Boolean);
+  const roadmap =
+    Array.isArray(product.roadmap) && product.roadmap.length
+      ? product.roadmap
+      : [`Current: ${product.status}`, "Next: Validate user pain and product packaging", "Later: Improve reporting, workflow, or paid delivery model"];
+
+  return {
+    valueProposition: product.valueProposition || product.description,
+    targetUsers,
+    problemPoints,
+    whatItDoes,
+    features,
+    monetizationOptions,
+    roadmap,
+    story: product.story || {
+      problem: problemPoints[0],
+      audience: product.targetUser || targetUsers.join(", "),
+      offer: product.valueProposition || product.description,
+      outcome:
+        "Helps users move from uncertainty to a clearer readiness, documentation, compliance, or workflow decision."
+    },
+    relatedItems: product.relatedItems || [
+      { name: "Products", href: "/products/", type: "Product", reason: "Explore the broader Product Lab." },
+      { name: "Engineering Projects", href: "/projects/", type: "Project", reason: "See the engineering case studies behind the same operational thinking." }
+    ],
+    ...product,
+    valueProposition: product.valueProposition || product.description,
+    targetUsers,
+    problemPoints,
+    whatItDoes,
+    features,
+    monetizationOptions,
+    roadmap
+  };
+});
