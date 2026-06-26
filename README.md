@@ -39,6 +39,8 @@ The portfolio highlights:
 VibeDeploy is a DevOps-focused product that helps founders and AI app builders check whether their apps are ready for production across:
 
 * CI/CD
+* Automation
+* Containerization
 * secrets handling
 * environment variables
 * deployment setup
