@@ -5,20 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="VibeDeploy has moved from the engineering projects section to Victor Nwoke’s product hub."
+      content="Engineering project detail page for Victor Nwoke’s Azure, DevOps, Kubernetes, CI/CD, observability, AIOps, infrastructure as code, and DevSecOps case studies."
     />
-    <meta http-equiv="refresh" content="4; url=/products/vibedeploy/" />
-    <link rel="canonical" href="/products/vibedeploy/" />
     <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../../assets/index-D18LbNVd.css" />
     <link rel="stylesheet" href="../../assets/lab.css" />
-    <title>VibeDeploy Has Moved | Victor Nwoke</title>
+    <title>Engineering Project | Victor Nwoke</title>
     <script>
       (function () {
         try {
@@ -36,46 +31,24 @@
   <body>
     <div class="page">
       <header class="topbar">
-        <a class="brand" href="/">
-          <span class="brand-mark">VN</span>
-          <span>Victor Nwoke</span>
-        </a>
+        <a class="brand" href="/"><span class="brand-mark">VN</span><span>Victor Nwoke</span></a>
         <button class="button menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu"><span class="menu-toggle-lines" aria-hidden="true"></span></button>
         <nav class="nav-actions" id="site-nav" aria-label="Main navigation">
           <a class="button" href="/products/" data-nav="products">Products</a>
           <a class="button" href="/projects/" data-nav="projects">Projects</a>
           <a class="button" href="/products/vibedeploy/" data-nav="vibedeploy">VibeDeploy</a>
           <a class="button" href="/#contact" data-nav="audit">Audit</a>
-          <button class="button theme-toggle" type="button" id="theme-toggle" aria-label="Switch to dark mode">
-            <span id="theme-toggle-label">Dark</span>
-          </button>
+          <button class="button theme-toggle" type="button" id="theme-toggle" aria-label="Switch to dark mode"><span id="theme-toggle-label">Dark</span></button>
         </nav>
       </header>
-
-      <main>
-        <section class="container hero">
-          <span class="kicker">Moved to Products</span>
-          <h1>VibeDeploy is now a product page</h1>
-          <p class="hero-copy">
-            VibeDeploy has moved from the engineering projects section to the product hub.
-            The old route is preserved so existing links still work.
-          </p>
-          <div class="hero-actions">
-            <a class="button primary" href="/products/vibedeploy/">Go to VibeDeploy</a>
-            <a class="button" href="/projects/">View Engineering Projects</a>
-          </div>
-        </section>
-      </main>
-
+      <main id="detail-root"></main>
       <footer class="container footer">
-        <p>
-          You will be redirected to <a href="/products/vibedeploy/">/products/vibedeploy/</a>.
-        </p>
+        <p>Engineering projects by Victor Nwoke. Product tools live at <a href="/products/">/products/</a>.</p>
       </footer>
     </div>
-
     <script src="../../assets/js/products-data.js"></script>
     <script src="../../assets/js/projects-data.js"></script>
     <script src="../../assets/lab-ui.js"></script>
+    <script>renderDetailFromPath("project");</script>
   </body>
 </html>

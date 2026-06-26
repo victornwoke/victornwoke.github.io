@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="VibeDeploy has moved from the engineering projects section to Victor Nwoke’s product hub."
+      content="Product detail page for Victor Nwoke’s Product Lab tools, SaaS experiments, audit products, report generators, and automation apps."
     />
-    <meta http-equiv="refresh" content="4; url=/products/vibedeploy/" />
-    <link rel="canonical" href="/products/vibedeploy/" />
     <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -18,7 +16,7 @@
     />
     <link rel="stylesheet" href="../../assets/index-D18LbNVd.css" />
     <link rel="stylesheet" href="../../assets/lab.css" />
-    <title>VibeDeploy Has Moved | Victor Nwoke</title>
+    <title>Product | Victor Nwoke</title>
     <script>
       (function () {
         try {
@@ -52,24 +50,12 @@
         </nav>
       </header>
 
-      <main>
-        <section class="container hero">
-          <span class="kicker">Moved to Products</span>
-          <h1>VibeDeploy is now a product page</h1>
-          <p class="hero-copy">
-            VibeDeploy has moved from the engineering projects section to the product hub.
-            The old route is preserved so existing links still work.
-          </p>
-          <div class="hero-actions">
-            <a class="button primary" href="/products/vibedeploy/">Go to VibeDeploy</a>
-            <a class="button" href="/projects/">View Engineering Projects</a>
-          </div>
-        </section>
-      </main>
+      <main id="detail-root"></main>
 
       <footer class="container footer">
         <p>
-          You will be redirected to <a href="/products/vibedeploy/">/products/vibedeploy/</a>.
+          Product Lab by Victor Nwoke. Engineering case studies live at
+          <a href="/projects/">/projects/</a>.
         </p>
       </footer>
     </div>
@@ -77,5 +63,8 @@
     <script src="../../assets/js/products-data.js"></script>
     <script src="../../assets/js/projects-data.js"></script>
     <script src="../../assets/lab-ui.js"></script>
+    <script>
+      renderDetailFromPath("product");
+    </script>
   </body>
 </html>
