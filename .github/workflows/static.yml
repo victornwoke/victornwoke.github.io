@@ -40,7 +40,16 @@ jobs:
           if [ -z "$FORMSPREE_FORM_ID" ]; then
             echo "::warning::VITE_FORMSPREE_PORTFOLIO_FORM_ID is not set. The contact form fallback will remain visible."
           else
-            sed -i "s/formspreeFormId: \"YOUR_FORM_ID\"/formspreeFormId: \"$FORMSPREE_FORM_ID\"/" index.html
+            node -e '
+              const fs = require("fs");
+              const rawValue = process.env.FORMSPREE_FORM_ID.trim();
+              const formId = rawValue.replace(/^https:\/\/formspree\.io\/f\//, "").replace(/^\/f\//, "");
+              const html = fs.readFileSync("index.html", "utf8");
+              fs.writeFileSync(
+                "index.html",
+                html.replace("formspreeFormId: \"YOUR_FORM_ID\"", `formspreeFormId: ${JSON.stringify(formId)}`)
+              );
+            '
           fi
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

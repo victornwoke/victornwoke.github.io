@@ -97,7 +97,7 @@ Fallback email:
 victornwoke147@outlook.com
 ```
 
-The Formspree form ID is configured in `index.html`:
+The Formspree form ID has a placeholder in `index.html`:
 
 ```html
 window.VICTOR_PORTFOLIO_CONFIG = {
@@ -111,7 +111,9 @@ If Formspree provides this endpoint:
 https://formspree.io/f/abcdwxyz
 ```
 
-then set:
+For production, add either the bare ID or the full endpoint as a GitHub repository variable named `VITE_FORMSPREE_PORTFOLIO_FORM_ID`. The Pages workflow injects that value into `index.html` before deployment.
+
+For local static testing, you can temporarily set:
 
 ```html
 window.VICTOR_PORTFOLIO_CONFIG = {
