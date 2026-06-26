@@ -40,7 +40,8 @@ jobs:
         run: |
           export FORMSPREE_FORM_ID="${FORMSPREE_FORM_ID_VAR:-$FORMSPREE_FORM_ID_SECRET}"
           if [ -z "$FORMSPREE_FORM_ID" ]; then
-            echo "::warning::VITE_FORMSPREE_PORTFOLIO_FORM_ID is not set. The contact form fallback will remain visible."
+            echo "::error::VITE_FORMSPREE_PORTFOLIO_FORM_ID is not set. Add it as a repository variable, environment variable, or secret before deploying."
+            exit 1
           else
             node -e '
               const fs = require("fs");
