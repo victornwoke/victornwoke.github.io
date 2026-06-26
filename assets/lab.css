@@ -912,6 +912,391 @@ h3 {
   background: var(--surface);
 }
 
+.project-hero {
+  padding-bottom: 68px;
+}
+
+.project-hero-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+  gap: clamp(28px, 5vw, 64px);
+  align-items: end;
+}
+
+.project-hero-copy {
+  max-width: 820px;
+}
+
+.project-summary-card,
+.sidebar-panel,
+.case-section,
+.repo-card,
+.tool-group-card,
+.skill-card,
+.star-card,
+.screenshot-card {
+  border: 1px solid color-mix(in srgb, var(--border) 74%, transparent);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface) 88%, transparent), color-mix(in srgb, var(--surface-muted) 34%, var(--surface))),
+    var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.project-summary-card {
+  border-color: rgba(139, 92, 246, 0.32);
+  border-radius: 18px;
+  color: #dbeafe;
+  background:
+    linear-gradient(135deg, rgba(15, 23, 42, 0.84), rgba(30, 27, 75, 0.72)),
+    rgba(15, 23, 42, 0.7);
+  padding: 22px;
+  backdrop-filter: blur(16px);
+}
+
+.summary-eyebrow {
+  display: block;
+  margin-bottom: 14px;
+  color: #93c5fd;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.project-summary-card dl,
+.sidebar-panel dl {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.project-summary-card div,
+.sidebar-panel div {
+  display: grid;
+  gap: 4px;
+}
+
+.project-summary-card dt,
+.sidebar-panel dt {
+  color: inherit;
+  opacity: 0.72;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.project-summary-card dd,
+.sidebar-panel dd {
+  margin: 0;
+  line-height: 1.45;
+}
+
+.project-summary-card a,
+.sidebar-panel a {
+  color: #93c5fd;
+  font-weight: 800;
+}
+
+.case-study {
+  padding-top: 62px;
+  padding-bottom: 72px;
+}
+
+.case-study-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.case-sidebar {
+  position: sticky;
+  top: 96px;
+}
+
+.sidebar-panel {
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.case-main {
+  display: grid;
+  gap: 28px;
+  min-width: 0;
+}
+
+.case-section {
+  overflow: hidden;
+  border-radius: 18px;
+  padding: clamp(22px, 3vw, 34px);
+}
+
+.case-section-head {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.case-section-head .kicker {
+  margin-bottom: 0;
+}
+
+.case-section h2 {
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.12;
+}
+
+.case-section-head p,
+.summary-copy p,
+.repo-card p,
+.skill-card p,
+.star-card p,
+.screenshot-card p {
+  color: var(--text-muted);
+  line-height: 1.68;
+}
+
+.star-grid,
+.architecture-grid,
+.tool-group-grid,
+.skill-grid,
+.links-grid,
+.screenshot-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.star-grid,
+.tool-group-grid,
+.links-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.skill-grid,
+.screenshot-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.star-card,
+.tool-group-card,
+.skill-card,
+.repo-card,
+.screenshot-card {
+  border-radius: 16px;
+  padding: 18px;
+}
+
+.star-card span {
+  display: inline-flex;
+  margin-bottom: 12px;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.architecture-grid {
+  grid-template-columns: minmax(0, 0.86fr) minmax(280px, 1fr);
+  align-items: stretch;
+}
+
+.architecture-copy {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.architecture-copy h3,
+.tool-group-card h3,
+.skill-card h3,
+.repo-card h3,
+.process-timeline h3,
+.screenshot-card h3 {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.25;
+}
+
+.architecture-visual {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.architecture-visual img {
+  width: 100%;
+  min-height: 260px;
+  max-height: 460px;
+  object-fit: contain;
+  border: 1px solid rgba(96, 165, 250, 0.26);
+  border-radius: 16px;
+  background: #0f172a;
+  padding: 12px;
+}
+
+.architecture-visual figcaption {
+  color: var(--text-soft);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.diagram-placeholder,
+.shot-placeholder {
+  display: grid;
+  place-items: center;
+  min-height: 260px;
+  border: 1px dashed color-mix(in srgb, var(--accent-purple) 40%, var(--border));
+  border-radius: 16px;
+  color: var(--text-muted);
+  background:
+    linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px),
+    color-mix(in srgb, var(--surface-muted) 50%, transparent);
+  background-size: 28px 28px;
+  padding: 24px;
+  text-align: center;
+}
+
+.diagram-placeholder strong,
+.shot-placeholder strong {
+  display: block;
+  color: var(--text);
+  font-size: 18px;
+}
+
+.diagram-placeholder span,
+.shot-placeholder span {
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+.tool-group-card,
+.repo-card {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+
+.tool-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tool-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid rgba(59, 130, 246, 0.22);
+  border-radius: 999px;
+  color: var(--badge-text);
+  background: color-mix(in srgb, var(--badge-bg) 72%, transparent);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.process-timeline {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.process-timeline li {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 16px;
+  border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  padding: 16px;
+}
+
+.step-number {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #7c3aed, #2563eb);
+  font-weight: 900;
+}
+
+.process-timeline p {
+  margin: 8px 0 0;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.process-timeline .tool-chip-row {
+  margin-top: 12px;
+}
+
+.summary-copy {
+  display: grid;
+  gap: 14px;
+  max-width: 820px;
+}
+
+.screenshot-card {
+  display: grid;
+  gap: 14px;
+  color: inherit;
+}
+
+.screenshot-card img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: contain;
+  border: 1px solid rgba(96, 165, 250, 0.18);
+  border-radius: 14px;
+  background: #0f172a;
+  padding: 10px;
+}
+
+.screenshot-card.placeholder {
+  padding: 0;
+}
+
+.screenshot-card .shot-placeholder {
+  min-height: 210px;
+}
+
+.repo-card .text-link {
+  justify-self: start;
+}
+
+.case-related-grid .mini-card {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.case-related-grid .mini-card::after {
+  content: "View";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 8px;
+  color: #ffffff;
+  background: linear-gradient(90deg, #7c3aed, #2563eb);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.case-final-cta {
+  margin-bottom: 0;
+}
+
 @media (max-width: 980px) {
   .filter-bar {
     top: 73px;
@@ -933,9 +1318,24 @@ h3 {
   }
 
   .detail-hero-grid,
+  .project-hero-grid,
+  .case-study-layout,
+  .architecture-grid,
   .split-section,
   .business-model {
     grid-template-columns: 1fr;
+  }
+
+  .case-sidebar {
+    position: static;
+  }
+
+  .star-grid,
+  .tool-group-grid,
+  .links-grid,
+  .screenshot-grid,
+  .skill-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .compact-grid,
@@ -1042,14 +1442,25 @@ h3 {
   .two-grid,
   .compact-grid,
   .feature-grid,
-  .related-grid {
+  .related-grid,
+  .star-grid,
+  .tool-group-grid,
+  .skill-grid,
+  .links-grid,
+  .screenshot-grid {
     grid-template-columns: 1fr;
   }
 
   .card-body,
   .lab-note,
   .final-cta,
-  .detail-panel {
+  .detail-panel,
+  .project-summary-card,
+  .case-section,
+  .repo-card,
+  .tool-group-card,
+  .skill-card,
+  .star-card {
     padding: 20px;
   }
 
@@ -1062,5 +1473,17 @@ h3 {
 
   .detail-article {
     padding-top: 42px;
+  }
+
+  .case-study {
+    padding-top: 42px;
+  }
+
+  .process-timeline li {
+    grid-template-columns: 1fr;
+  }
+
+  .repo-card .text-link {
+    justify-self: stretch;
   }
 }

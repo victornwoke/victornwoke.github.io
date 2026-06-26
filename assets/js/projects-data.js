@@ -11,22 +11,125 @@ window.projectsData = [
     problemSolved:
       "Shows how teams can deploy applications to Kubernetes using repeatable infrastructure, GitOps workflows, secure secret management, and multi-environment patterns.",
     architecture:
-      "Terraform provisions the AKS foundation, Helm packages platform services, ArgoCD reconciles workloads from Git, Azure Key Vault centralises secrets, and Azure Monitor with Container Insights supports operational visibility.",
+      {
+        summary:
+          "The platform uses Terraform to provision Azure resources and AKS. Kubernetes workloads are managed through Helm and GitOps workflows with ArgoCD. Secrets are handled through Azure Key Vault integration, while Azure Monitor and Container Insights provide observability for cluster and workload behaviour.",
+        components: [
+          "Terraform provisions AKS and supporting Azure resources.",
+          "ArgoCD handles GitOps deployment reconciliation from Git.",
+          "Helm packages Kubernetes workloads for repeatable deployment.",
+          "Azure Key Vault supports secret management and secure configuration.",
+          "Azure Monitor and Container Insights support operational visibility.",
+          "The structure supports dev/test/prod style environment thinking."
+        ],
+        diagramSrc:
+          "https://raw.githubusercontent.com/victornwoke/Terraform-end-to-end-Project-with-AKS-and-GitOps/main/AKS-GitOps-Architecture%20.png",
+        diagramAlt: "AKS GitOps architecture diagram showing Terraform, AKS, ArgoCD, Helm, Key Vault, and monitoring components"
+      },
     tools: ["Azure AKS", "Terraform", "ArgoCD", "Helm", "Kubernetes", "Azure Key Vault", "Azure Monitor", "Container Insights"],
+    toolGroups: [
+      { name: "Cloud", tools: ["Azure", "AKS", "Azure Key Vault", "Azure Monitor"] },
+      { name: "Infrastructure as Code", tools: ["Terraform"] },
+      { name: "Kubernetes / Platform", tools: ["Kubernetes", "Helm", "ArgoCD"] },
+      { name: "Operations", tools: ["Container Insights", "Monitoring"] }
+    ],
+    star: {
+      situation:
+        "Modern cloud teams need repeatable Kubernetes platforms that can be deployed, configured, and maintained without relying on manual portal changes.",
+      task:
+        "Build a production-style AKS platform that demonstrates infrastructure as code, GitOps deployment, secret management, and operational monitoring.",
+      action:
+        "Terraform defines the Azure platform foundation, ArgoCD manages GitOps application delivery, Helm packages workloads, Azure Key Vault supports secret handling, and Azure Monitor / Container Insights provides runtime visibility.",
+      result:
+        "The project demonstrates a repeatable AKS platform pattern that can be reviewed by recruiters, hiring managers, and technical teams as evidence of platform engineering, Kubernetes, GitOps, and cloud automation capability."
+    },
     skillsDemonstrated: [
-      "Platform Engineering",
-      "GitOps",
-      "Kubernetes Operations",
-      "Infrastructure as Code",
-      "Secret Management",
-      "Multi-Environment Deployment"
+      {
+        name: "Infrastructure as Code",
+        evidence: "Terraform is used to define repeatable cloud infrastructure instead of relying on manual portal deployment."
+      },
+      {
+        name: "Azure Kubernetes Service",
+        evidence: "AKS is the target platform for demonstrating managed Kubernetes deployment and operating patterns."
+      },
+      {
+        name: "GitOps",
+        evidence: "ArgoCD represents the desired-state reconciliation workflow from Git."
+      },
+      {
+        name: "Helm-based deployment",
+        evidence: "Helm packages workloads so Kubernetes deployments can be versioned and repeated."
+      },
+      {
+        name: "Secret management",
+        evidence: "Azure Key Vault integration shows how sensitive configuration can be handled outside application code."
+      },
+      {
+        name: "Monitoring and observability",
+        evidence: "Azure Monitor and Container Insights provide visibility into cluster and workload behaviour."
+      },
+      {
+        name: "Multi-environment platform thinking",
+        evidence: "The project is structured as a reference pattern for dev/test/prod style deployment workflows."
+      }
     ],
     demonstrates:
       "Platform engineering, GitOps, Kubernetes operations, secret management, and multi-environment deployment.",
     implementationSteps: [
-      "Provision the AKS platform and supporting Azure resources with Terraform.",
-      "Configure GitOps deployment workflows with ArgoCD and Helm.",
-      "Integrate Key Vault-backed secret management and monitoring for runtime operations."
+      {
+        title: "Provision Azure resource foundation with Terraform",
+        description: "Define the repeatable Azure foundation that supports the Kubernetes platform.",
+        tools: ["Terraform", "Azure"]
+      },
+      {
+        title: "Create and configure the AKS cluster",
+        description: "Build the managed Kubernetes cluster and supporting platform configuration.",
+        tools: ["Azure AKS", "Kubernetes"]
+      },
+      {
+        title: "Structure environments for repeatable deployment",
+        description: "Organise the project around environment-aware deployment patterns.",
+        tools: ["Terraform", "Git"]
+      },
+      {
+        title: "Configure GitOps delivery with ArgoCD",
+        description: "Use GitOps reconciliation to keep deployed state aligned with source-controlled desired state.",
+        tools: ["ArgoCD", "GitOps"]
+      },
+      {
+        title: "Package workloads with Helm",
+        description: "Package Kubernetes workloads for repeatable deployment and configuration.",
+        tools: ["Helm", "Kubernetes"]
+      },
+      {
+        title: "Integrate Azure Key Vault for secrets",
+        description: "Represent secure secret handling outside application code and deployment manifests.",
+        tools: ["Azure Key Vault"]
+      },
+      {
+        title: "Add monitoring with Azure Monitor and Container Insights",
+        description: "Expose runtime visibility for cluster and workload behaviour.",
+        tools: ["Azure Monitor", "Container Insights"]
+      },
+      {
+        title: "Document deployment flow and operational checks",
+        description: "Make the project reviewable for technical audiences and future platform work.",
+        tools: ["README", "Architecture notes"]
+      }
+    ],
+    implementationSummary: [
+      "This case study builds a production-style AKS platform pattern rather than a one-off cluster. Terraform defines the Azure foundation, AKS provides the managed Kubernetes runtime, and GitOps workflows keep application delivery tied to source-controlled configuration.",
+      "ArgoCD and Helm show how workloads can be packaged and reconciled consistently. Azure Key Vault supports secure configuration handling, while Azure Monitor and Container Insights provide the observability layer needed to reason about runtime behaviour.",
+      "A reviewer should notice the combination of infrastructure as code, platform deployment, GitOps, secrets, and monitoring. The project is intentionally framed as evidence of platform engineering capability without claiming unmeasured business metrics."
+    ],
+    screenshots: [
+      {
+        title: "AKS GitOps Architecture",
+        type: "Architecture",
+        src: "https://raw.githubusercontent.com/victornwoke/Terraform-end-to-end-Project-with-AKS-and-GitOps/main/AKS-GitOps-Architecture%20.png",
+        alt: "Architecture diagram for Terraform AKS GitOps platform",
+        caption: "README architecture image showing the AKS GitOps platform structure."
+      }
     ],
     projectUrl: "/projects/terraform-aks-gitops-platform/",
     githubUrl: "https://github.com/victornwoke/Terraform-end-to-end-Project-with-AKS-and-GitOps",
@@ -36,8 +139,36 @@ window.projectsData = [
     ctas: [],
     tags: ["Azure", "AKS", "Terraform", "ArgoCD", "GitOps"],
     relatedItems: [
-      { name: "Cloud-Native AKS Microservices Platform", href: "/projects/cloud-native-aks-microservices-platform/", type: "Project" },
-      { name: "DevSecOps Pipeline Lab", href: "/projects/devsecops-pipeline-lab/", type: "Project" }
+      {
+        name: "Cloud-Native AKS Microservices Platform",
+        href: "/projects/cloud-native-aks-microservices-platform/",
+        type: "Project",
+        reason: "Extends the same AKS and microservices platform engineering theme."
+      },
+      {
+        name: "DevSecOps Pipeline Lab",
+        href: "/projects/devsecops-pipeline-lab/",
+        type: "Project",
+        reason: "Connects delivery automation with security checks and release gates."
+      },
+      {
+        name: "Production Observability Stack",
+        href: "/projects/production-observability-stack/",
+        type: "Project",
+        reason: "Complements AKS platform work with monitoring and alerting patterns."
+      },
+      {
+        name: "VibeDeploy",
+        href: "/products/vibedeploy/",
+        type: "Product",
+        reason: "Applies production-readiness thinking to AI-built app launches."
+      },
+      {
+        name: "CloudCost Snapshot",
+        href: "/products/cloudcost-snapshot/",
+        type: "Product",
+        reason: "Connects cloud platform work with cost and operational visibility."
+      }
     ],
     featured: true
   },
@@ -94,7 +225,20 @@ window.projectsData = [
     problemSolved:
       "Shows how to deploy a scalable and repeatable Azure web application environment using infrastructure as code and secure networking patterns.",
     architecture:
-      "Terraform defines Azure VM Scale Sets behind a Standard Load Balancer, with NSG rules, NAT Gateway egress, remote state, and cloud-init provisioning for repeatable web app deployment.",
+      {
+        summary:
+          "Terraform defines Azure VM Scale Sets behind a Standard Load Balancer, with NSG rules, NAT Gateway egress, remote state, and cloud-init provisioning for repeatable web app deployment.",
+        components: [
+          "Azure VM Scale Sets provide the scalable compute tier.",
+          "Standard Load Balancer distributes traffic across instances.",
+          "NSG rules and NAT Gateway represent secure network access and egress patterns.",
+          "Terraform remote backend supports repeatable infrastructure state handling.",
+          "Cloud-init handles instance bootstrap and provisioning."
+        ],
+        diagramSrc:
+          "https://raw.githubusercontent.com/victornwoke/azure-vmss-load-balanced-scalable-webapp-terraform/main/azure_vmss_architecture.png",
+        diagramAlt: "Azure VMSS scalable web app architecture diagram"
+      },
     tools: ["Azure VM Scale Sets", "Terraform", "Standard Load Balancer", "NSG", "NAT Gateway", "Cloud-init", "Remote Backend"],
     skillsDemonstrated: [
       "Azure Infrastructure",
@@ -110,6 +254,15 @@ window.projectsData = [
       "Create repeatable Azure infrastructure with Terraform and remote state.",
       "Place scalable compute behind a Standard Load Balancer.",
       "Apply secure networking and provisioning patterns with NSGs, NAT Gateway, and cloud-init."
+    ],
+    screenshots: [
+      {
+        title: "Azure VMSS Architecture",
+        type: "Architecture",
+        src: "https://raw.githubusercontent.com/victornwoke/azure-vmss-load-balanced-scalable-webapp-terraform/main/azure_vmss_architecture.png",
+        alt: "Azure VMSS scalable web app architecture diagram",
+        caption: "README architecture image from the public GitHub repository."
+      }
     ],
     projectUrl: "/projects/azure-vmss-scalable-webapp/",
     githubUrl: "https://github.com/victornwoke/azure-vmss-load-balanced-scalable-webapp-terraform",
@@ -136,7 +289,19 @@ window.projectsData = [
     problemSolved:
       "Explores how tradespeople and service-based businesses could manage work through a scalable full-stack platform while demonstrating Kubernetes, CI/CD, and observability practices.",
     architecture:
-      "React, Node.js, and Python worker services run as containerised microservices with Kubernetes deployment patterns, GitOps delivery, CI/CD automation, and Prometheus observability.",
+      {
+        summary:
+          "React, Node.js, and Python worker services run as containerised microservices with Kubernetes deployment patterns, GitOps delivery, CI/CD automation, and Prometheus observability.",
+        components: [
+          "React provides the frontend experience.",
+          "Node.js services handle core backend workflows.",
+          "Python worker services support background processing.",
+          "Docker and Kubernetes represent the cloud-native runtime model.",
+          "Prometheus supports monitoring and service visibility."
+        ],
+        diagramSrc: "https://raw.githubusercontent.com/victornwoke/service-mgr/main/assets/architecture.png",
+        diagramAlt: "Service business management system architecture diagram"
+      },
     tools: ["React", "Node.js", "Python Worker", "Docker", "Kubernetes", "Prometheus", "GitOps", "CI/CD"],
     skillsDemonstrated: [
       "Full-Stack Engineering",
@@ -152,6 +317,22 @@ window.projectsData = [
       "Model a service business workflow as a full-stack product experience.",
       "Split application responsibilities across containerised services.",
       "Demonstrate delivery and operations with Kubernetes, GitOps, CI/CD, and monitoring."
+    ],
+    screenshots: [
+      {
+        title: "Service Manager Architecture",
+        type: "Architecture",
+        src: "https://raw.githubusercontent.com/victornwoke/service-mgr/main/assets/architecture.png",
+        alt: "Service business management system architecture diagram",
+        caption: "Architecture image referenced by the public GitHub README."
+      },
+      {
+        title: "Deployment Architecture",
+        type: "Deployment",
+        src: "https://raw.githubusercontent.com/victornwoke/service-mgr/main/assets/deployment-architecture.png",
+        alt: "Service business management system deployment architecture diagram",
+        caption: "Deployment architecture image from repository assets."
+      }
     ],
     projectUrl: "/projects/service-business-management-system/",
     githubUrl: "https://github.com/victornwoke/service-mgr",
@@ -220,7 +401,20 @@ window.projectsData = [
     problemSolved:
       "Demonstrates how Azure infrastructure can be deployed consistently using infrastructure as code instead of manual portal configuration.",
     architecture:
-      "Bicep templates define Azure infrastructure, GitHub Actions coordinates deployment, and governance, security, monitoring, and operational checks support consistent delivery.",
+      {
+        summary:
+          "Bicep templates define Azure infrastructure, GitHub Actions coordinates deployment, and governance, security, monitoring, and operational checks support consistent delivery.",
+        components: [
+          "Bicep templates define Azure resources as code.",
+          "GitHub Actions coordinates infrastructure deployment workflows.",
+          "Azure CLI and PowerShell support operational automation.",
+          "Azure Policy and Key Vault represent governance and security controls.",
+          "Azure Monitor and Log Analytics provide visibility for deployed infrastructure."
+        ],
+        diagramSrc:
+          "https://raw.githubusercontent.com/victornwoke/Automating-Azure-Infrastructure/main/images/architectural_diagram.png",
+        diagramAlt: "Automating Azure Infrastructure with Bicep architecture diagram"
+      },
     tools: ["Azure Bicep", "GitHub Actions", "Azure CLI", "PowerShell", "Azure Policy", "Key Vault", "Azure Monitor", "Log Analytics"],
     skillsDemonstrated: [
       "Infrastructure as Code",
@@ -236,6 +430,15 @@ window.projectsData = [
       "Define Azure infrastructure using Bicep modules and repeatable deployment conventions.",
       "Automate infrastructure delivery through GitHub Actions and Azure CLI.",
       "Apply governance, security, monitoring, and operational controls."
+    ],
+    screenshots: [
+      {
+        title: "Bicep Infrastructure Architecture",
+        type: "Architecture",
+        src: "https://raw.githubusercontent.com/victornwoke/Automating-Azure-Infrastructure/main/images/architectural_diagram.png",
+        alt: "Automating Azure Infrastructure with Bicep architecture diagram",
+        caption: "Architecture image referenced by the public GitHub README."
+      }
     ],
     projectUrl: "/projects/automating-azure-infrastructure-bicep/",
     githubUrl: "https://github.com/victornwoke/Automating-Azure-Infrastructure",

@@ -82,9 +82,9 @@
     return typeof url === "string" && url.trim().toLowerCase() === "private";
   }
 
-  function buttonMarkup(ctas) {
+  function buttonMarkup(ctas, limit = 2) {
     return ctas
-      .slice(0, 2)
+      .slice(0, limit)
       .map(
         (cta, index) =>
           `<a class="text-link ${cta.priority === "primary" || index === 0 ? "primary" : ""}" href="${cta.href}">${cta.label}</a>`
@@ -268,6 +268,7 @@
           <a class="mini-card" href="${item.href}">
             <span class="pill">${item.type}</span>
             <h3>${item.name}</h3>
+            ${item.reason ? `<p>${item.reason}</p>` : ""}
           </a>
         `
       )
@@ -277,13 +278,375 @@
   function projectLinksPanel(item) {
     const links = itemCtas(item, "project");
     if (!links.length) return "<p>Links will be added as public assets become available.</p>";
-    return `<div class="link-row">${buttonMarkup(links)}</div>`;
+    return `<div class="link-row">${buttonMarkup(links, 5)}</div>`;
   }
 
   function contentMarkup(body) {
     if (Array.isArray(body)) return listMarkup(body);
     if (typeof body === "string" && body.startsWith("<")) return body;
     return `<p>${body}</p>`;
+  }
+
+  function textOf(value) {
+    if (typeof value === "string") return value;
+    if (value && typeof value === "object") return value.name || value.title || value.description || "";
+    return "";
+  }
+
+  function projectStar(item) {
+    const star = item.star || {};
+    return {
+      situation:
+        star.situation ||
+        `Modern teams need ${item.category.toLowerCase()} patterns that are repeatable, reviewable, and not dependent on manual portal changes.`,
+      task:
+        star.task ||
+        `Design a production-style reference project that demonstrates ${arrayFrom(item.skillsDemonstrated).map(textOf).slice(0, 3).join(", ").toLowerCase() || "cloud engineering capability"}.`,
+      action:
+        star.action ||
+        `${item.architecture && typeof item.architecture === "string" ? item.architecture : item.description}`,
+      result:
+        star.result ||
+        "Provides a recruiter-friendly case study of practical cloud, DevOps, and platform engineering capability without claiming unmeasured production metrics."
+    };
+  }
+
+  function architectureData(item) {
+    if (item.architecture && typeof item.architecture === "object") {
+      return {
+        summary: item.architecture.summary || item.description,
+        components: arrayFrom(item.architecture.components),
+        diagramSrc: item.architecture.diagramSrc || "",
+        diagramAlt: item.architecture.diagramAlt || `${titleOf(item)} architecture diagram`
+      };
+    }
+    return {
+      summary: item.architecture || item.description,
+      components: arrayFrom(item.tools).slice(0, 6),
+      diagramSrc: "",
+      diagramAlt: `${titleOf(item)} architecture diagram`
+    };
+  }
+
+  function inferToolGroups(item) {
+    if (Array.isArray(item.toolGroups) && item.toolGroups.length) return item.toolGroups;
+
+    const groups = [
+      { name: "Cloud", tools: [] },
+      { name: "Infrastructure as Code", tools: [] },
+      { name: "Kubernetes / Platform", tools: [] },
+      { name: "Operations", tools: [] },
+      { name: "Application", tools: [] }
+    ];
+    const assigned = new Set();
+
+    arrayFrom(item.tools).forEach((tool) => {
+      const label = String(tool);
+      const lower = label.toLowerCase();
+      let group = "Application";
+      if (/azure|aks|key vault|monitor|log analytics|vm scale|load balancer|nsg|nat gateway|private link|rbac|vnet/.test(lower)) group = "Cloud";
+      if (/terraform|bicep|cloud-init|remote backend|policy|iac/.test(lower)) group = "Infrastructure as Code";
+      if (/kubernetes|helm|argocd|docker|microservices|backstage/.test(lower)) group = "Kubernetes / Platform";
+      if (/github actions|grafana|prometheus|container insights|monitoring|alert|dashboard|ci\/cd|trivy|secret|deployment|branch protection/.test(lower)) group = "Operations";
+      const target = groups.find((entry) => entry.name === group);
+      if (target && !assigned.has(label)) {
+        target.tools.push(label);
+        assigned.add(label);
+      }
+    });
+
+    return groups.filter((group) => group.tools.length);
+  }
+
+  function skillEvidence(skill, item) {
+    const name = textOf(skill);
+    if (skill && typeof skill === "object" && skill.evidence) return skill.evidence;
+    const lower = name.toLowerCase();
+    if (lower.includes("infrastructure as code")) return "Infrastructure is described as repeatable code rather than manual portal configuration.";
+    if (lower.includes("gitops")) return "GitOps workflows show desired state being reconciled from version-controlled configuration.";
+    if (lower.includes("kubernetes") || lower.includes("aks")) return "AKS, Kubernetes, and platform tooling demonstrate container platform operating patterns.";
+    if (lower.includes("secret")) return "Secret handling is represented through Key Vault or secure configuration practices where available.";
+    if (lower.includes("observability") || lower.includes("monitoring")) return "Monitoring, dashboards, logs, or runtime visibility are part of the operating model.";
+    if (lower.includes("ci/cd") || lower.includes("automation")) return "Delivery automation is represented through repeatable workflows and deployment steps.";
+    return `Shows practical evidence of ${name.toLowerCase()} within the ${titleOf(item)} case study.`;
+  }
+
+  function projectSkillCards(item) {
+    return arrayFrom(item.skillsDemonstrated)
+      .map((skill) => {
+        const name = textOf(skill);
+        return `<article class="skill-card"><h3>${name}</h3><p>${skillEvidence(skill, item)}</p></article>`;
+      })
+      .join("");
+  }
+
+  function implementationSteps(item) {
+    return arrayFrom(item.implementationSteps).map((step, index) => {
+      if (step && typeof step === "object") {
+        return {
+          title: step.title || `Step ${index + 1}`,
+          description: step.description || "",
+          tools: arrayFrom(step.tools)
+        };
+      }
+      return {
+        title: String(step).replace(/\.$/, ""),
+        description: "Part of the repeatable project implementation flow.",
+        tools: []
+      };
+    });
+  }
+
+  function screenshotsFor(item) {
+    return arrayFrom(item.screenshots).filter((shot) => shot && typeof shot === "object");
+  }
+
+  function projectCaseStudyPage(item) {
+    const star = projectStar(item);
+    const architecture = architectureData(item);
+    const heroCtas = itemCtas(item, "project");
+    const tools = arrayFrom(item.tools);
+    const relatedItems = arrayFrom(item.relatedItems, [
+      { name: "Engineering Projects", href: "/projects/", type: "Project", reason: "Explore the broader project portfolio." },
+      { name: "Products", href: "/products/", type: "Product", reason: "See product experiments connected to the engineering work." }
+    ]);
+    const shots = screenshotsFor(item);
+    const summaryParagraphs = arrayFrom(item.implementationSummary, [
+      `${titleOf(item)} packages the project into a reviewable technical case study with architecture, implementation steps, and operational evidence.`,
+      "The focus is on production-style thinking: repeatable delivery, clear component boundaries, and practical cloud/platform engineering patterns."
+    ]);
+    const repoLinks = itemCtas(item, "project").filter((cta) => cta.label !== "View Case Study");
+
+    return `
+      <section class="hero project-hero">
+        <div class="project-hero-grid">
+          <div class="project-hero-copy">
+            <span class="kicker">Engineering Case Study</span>
+            <h1>${titleOf(item)}</h1>
+            <p class="hero-copy">${item.description}</p>
+            <div class="status-row">
+              <span class="pill ${statusClass(item.status)}">${item.status}</span>
+              <span class="pill">${item.category}</span>
+              ${tools.slice(0, 4).map((tool) => `<span class="pill">${tool}</span>`).join("")}
+            </div>
+            <div class="hero-actions">
+              ${buttonMarkup(heroCtas, 2).replaceAll("text-link", "button")}
+              <a class="button" href="/projects/">Back to Projects</a>
+            </div>
+          </div>
+          <aside class="project-summary-card" aria-label="${titleOf(item)} project summary">
+            <span class="summary-eyebrow">Project Snapshot</span>
+            <dl>
+              <div><dt>Status</dt><dd>${item.status}</dd></div>
+              <div><dt>Category</dt><dd>${item.category}</dd></div>
+              <div><dt>Main tools</dt><dd>${shortList(tools, 5)}</dd></div>
+              <div><dt>Project type</dt><dd>Engineering case study</dd></div>
+              ${validLink(item.githubUrl) ? `<div><dt>Repository</dt><dd><a href="${item.githubUrl}">Available on GitHub</a></dd></div>` : ""}
+              ${item.lastUpdated ? `<div><dt>Last updated</dt><dd>${item.lastUpdated}</dd></div>` : ""}
+            </dl>
+          </aside>
+        </div>
+      </section>
+
+      <article class="container case-study">
+        <div class="case-study-layout">
+          <aside class="case-sidebar">
+            <div class="sidebar-panel">
+              <span class="summary-eyebrow">At a Glance</span>
+              <dl>
+                <div><dt>Status</dt><dd>${item.status}</dd></div>
+                <div><dt>Category</dt><dd>${item.category}</dd></div>
+                <div><dt>Skills</dt><dd>${arrayFrom(item.skillsDemonstrated).map(textOf).slice(0, 5).join(", ")}</dd></div>
+                ${validLink(item.githubUrl) ? `<div><dt>GitHub</dt><dd><a href="${item.githubUrl}">Repository available</a></dd></div>` : ""}
+              </dl>
+            </div>
+          </aside>
+
+          <div class="case-main">
+            <section class="case-section star-section">
+              <div class="case-section-head">
+                <span class="kicker">STAR Narrative</span>
+                <h2>Case Study Story</h2>
+                <p>A recruiter-ready view of the engineering context, task, implementation, and honest result.</p>
+              </div>
+              <div class="star-grid">
+                ${[
+                  ["Situation", star.situation],
+                  ["Task", star.task],
+                  ["Action", star.action],
+                  ["Result", star.result]
+                ]
+                  .map(
+                    ([title, body]) => `
+                      <article class="star-card">
+                        <span>${title}</span>
+                        <p>${body}</p>
+                      </article>
+                    `
+                  )
+                  .join("")}
+              </div>
+            </section>
+
+            <section class="case-section architecture-section">
+              <div class="case-section-head">
+                <span class="kicker">Architecture</span>
+                <h2>Architecture Overview</h2>
+                <p>${architecture.summary}</p>
+              </div>
+              <div class="architecture-grid">
+                <div class="architecture-copy">
+                  <h3>How the pieces connect</h3>
+                  <ul class="check-list">${architecture.components.map((component) => `<li>${component}</li>`).join("")}</ul>
+                </div>
+                <figure class="architecture-visual">
+                  ${
+                    validLink(architecture.diagramSrc)
+                      ? `<img src="${architecture.diagramSrc}" alt="${architecture.diagramAlt}" loading="lazy" />`
+                      : `<div class="diagram-placeholder"><strong>Architecture diagram coming soon</strong><span>Add image path in projectsData.architecture.diagramSrc</span></div>`
+                  }
+                  <figcaption>${validLink(architecture.diagramSrc) ? architecture.diagramAlt : "Architecture visual placeholder"}</figcaption>
+                </figure>
+              </div>
+            </section>
+
+            <section class="case-section">
+              <div class="case-section-head">
+                <span class="kicker">Tooling</span>
+                <h2>Tools Used</h2>
+                <p>Grouped by the role each tool plays in the project architecture and delivery workflow.</p>
+              </div>
+              <div class="tool-group-grid">
+                ${inferToolGroups(item)
+                  .map(
+                    (group) => `
+                      <article class="tool-group-card">
+                        <h3>${group.name}</h3>
+                        <div class="tool-chip-row">${arrayFrom(group.tools).map((tool) => `<span class="tool-chip">${tool}</span>`).join("")}</div>
+                      </article>
+                    `
+                  )
+                  .join("")}
+              </div>
+            </section>
+
+            <section class="case-section">
+              <div class="case-section-head">
+                <span class="kicker">Implementation</span>
+                <h2>Implementation Steps</h2>
+                <p>A concise process view of how the platform, infrastructure, or workflow is assembled.</p>
+              </div>
+              <ol class="process-timeline">
+                ${implementationSteps(item)
+                  .map(
+                    (step, index) => `
+                      <li>
+                        <div class="step-number">${String(index + 1).padStart(2, "0")}</div>
+                        <div>
+                          <h3>${step.title}</h3>
+                          <p>${step.description}</p>
+                          ${step.tools.length ? `<div class="tool-chip-row">${step.tools.map((tool) => `<span class="tool-chip">${tool}</span>`).join("")}</div>` : ""}
+                        </div>
+                      </li>
+                    `
+                  )
+                  .join("")}
+              </ol>
+            </section>
+
+            <section class="case-section summary-section">
+              <div class="case-section-head">
+                <span class="kicker">Review Notes</span>
+                <h2>Implementation Summary</h2>
+              </div>
+              <div class="summary-copy">${summaryParagraphs.map((paragraph) => `<p>${paragraph}</p>`).join("")}</div>
+            </section>
+
+            <section class="case-section">
+              <div class="case-section-head">
+                <span class="kicker">Evidence</span>
+                <h2>Production Skills Demonstrated</h2>
+                <p>Each card connects a skill to visible project evidence without inventing unmeasured metrics.</p>
+              </div>
+              <div class="skill-grid">${projectSkillCards(item)}</div>
+            </section>
+
+            <section class="case-section">
+              <div class="case-section-head">
+                <span class="kicker">Visual Evidence</span>
+                <h2>Screenshots / Diagrams</h2>
+                <p>Architecture diagrams, deployment evidence, pipeline views, and dashboards can be added directly from project assets.</p>
+              </div>
+              <div class="screenshot-grid">
+                ${
+                  shots.length
+                    ? shots
+                        .map(
+                          (shot) => {
+                            const content = `
+                              ${validLink(shot.src) ? `<img src="${shot.src}" alt="${shot.alt || shot.title}" loading="lazy" />` : `<div class="shot-placeholder"><strong>${shot.title}</strong><span>${shot.caption || "Image path coming soon."}</span></div>`}
+                              <div><span class="pill">${shot.type || "Screenshot"}</span><h3>${shot.title}</h3><p>${shot.caption || ""}</p></div>
+                            `;
+                            return validLink(shot.src)
+                              ? `<a class="screenshot-card" href="${shot.src}">${content}</a>`
+                              : `<article class="screenshot-card placeholder">${content}</article>`;
+                          }
+                        )
+                        .join("")
+                    : ["Architecture diagram", "Pipeline screenshot", "Monitoring dashboard"]
+                        .map(
+                          (title) => `
+                            <article class="screenshot-card placeholder">
+                              <div class="shot-placeholder"><strong>${title} placeholder</strong><span>Add image path in projectsData.screenshots</span></div>
+                            </article>
+                          `
+                        )
+                        .join("")
+                }
+              </div>
+            </section>
+
+            <section class="case-section links-section">
+              <div class="case-section-head">
+                <span class="kicker">Links</span>
+                <h2>GitHub / Links</h2>
+                <p>Only real public links are shown here. Empty, private, or missing links are suppressed.</p>
+              </div>
+              <div class="links-grid">
+                ${
+                  validLink(item.githubUrl)
+                    ? `<article class="repo-card"><span class="pill live">Repository available</span><h3>Source code / IaC / deployment files</h3><p>The public repository is available for reviewing project structure, infrastructure code, documentation, and deployment evidence.</p><a class="text-link primary" href="${item.githubUrl}">View GitHub</a></article>`
+                    : `<article class="repo-card"><span class="pill soon">Repository not public</span><h3>Public repository coming soon</h3><p>No private or missing repository links are exposed.</p></article>`
+                }
+                <article class="repo-card">
+                  <span class="pill">Project links</span>
+                  <h3>Supporting assets</h3>
+                  <div class="link-row">${buttonMarkup(repoLinks, 5) || `<span class="tag">No extra public links yet</span>`}</div>
+                </article>
+              </div>
+            </section>
+
+            <section class="case-section related-section">
+              <div class="case-section-head">
+                <span class="kicker">Related Work</span>
+                <h2>Related Projects and Products</h2>
+                <p>Adjacent case studies and tools connected to the same cloud, platform, DevOps, or product-readiness themes.</p>
+              </div>
+              <div class="related-grid case-related-grid">${relatedCards(relatedItems)}</div>
+            </section>
+
+            <section class="final-cta case-final-cta">
+              <h2>Need cloud, DevOps, or platform engineering support?</h2>
+              <p>Explore more Azure, Kubernetes, CI/CD, infrastructure as code, observability, and platform engineering case studies.</p>
+              <div class="link-row">
+                <a class="text-link primary" href="/projects/">View All Projects</a>
+                <a class="text-link" href="/#contact">Contact Victor</a>
+              </div>
+            </section>
+          </div>
+        </div>
+      </article>
+    `;
   }
 
   function productDetailPage(item) {
@@ -399,6 +762,7 @@
   function detailPage(item, type) {
     const isProduct = type === "product";
     if (isProduct) return productDetailPage(item);
+    return projectCaseStudyPage(item);
     const related = isProduct
       ? `<a class="text-link" href="/projects/">View Engineering Projects</a>`
       : `<a class="text-link" href="/products/">View Products</a>`;
