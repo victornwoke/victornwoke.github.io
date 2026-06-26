@@ -18,6 +18,175 @@
   </head>
   <body class="antialiased bg-neutral-50 text-neutral-950 dark:bg-neutral-950 dark:text-neutral-50">
     <div id="root"></div>
+    <script>
+      window.VICTOR_PORTFOLIO_CONFIG = {
+        formspreeFormId: "YOUR_FORM_ID"
+      };
+
+      (function () {
+        var directEmail = "victornwoke147@outlook.com";
+        var connectedPlaceholder = "YOUR_FORM_ID";
+
+        function getFormspreeFormId() {
+          var config = window.VICTOR_PORTFOLIO_CONFIG || {};
+          var formId = String(config.formspreeFormId || "").trim();
+          return formId === connectedPlaceholder ? "" : formId;
+        }
+
+        function getContactForm(target) {
+          var form = target && target.closest ? target.closest("form") : null;
+          if (!form) {
+            return null;
+          }
+
+          var requiredFields = ["name", "email", "subject", "message"];
+          var hasAllFields = requiredFields.every(function (fieldName) {
+            return form.querySelector("[name='" + fieldName + "']");
+          });
+
+          return hasAllFields ? form : null;
+        }
+
+        function getStatusElement(form) {
+          var status = form.parentElement.querySelector("[data-contact-form-status]");
+
+          if (!status) {
+            status = document.createElement("p");
+            status.setAttribute("data-contact-form-status", "true");
+            status.setAttribute("role", "status");
+            status.setAttribute("aria-live", "polite");
+            status.className = "mt-4 p-4 rounded-lg text-sm bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200";
+            form.insertAdjacentElement("afterend", status);
+          }
+
+          return status;
+        }
+
+        function setStatus(form, message, isSuccess, includeEmailLink) {
+          var status = getStatusElement(form);
+          var statusClass = "mt-4 p-4 rounded-lg text-sm " + (
+            isSuccess
+              ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200"
+              : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200"
+          );
+
+          if (status.className !== statusClass) {
+            status.className = statusClass;
+          }
+
+          if (!includeEmailLink) {
+            if (status.textContent !== message || status.querySelector("a")) {
+              status.textContent = message;
+            }
+            status.removeAttribute("data-status-message");
+            return;
+          }
+
+          if (status.getAttribute("data-status-message") === message) {
+            return;
+          }
+
+          status.textContent = "Something went wrong. Please email me directly at ";
+
+          var emailLink = document.createElement("a");
+          emailLink.href = "mailto:" + directEmail;
+          emailLink.className = "underline";
+          emailLink.textContent = directEmail;
+          status.appendChild(emailLink);
+          status.appendChild(document.createTextNode("."));
+          status.setAttribute("data-status-message", message);
+        }
+
+        function clearFormFields(form) {
+          Array.prototype.forEach.call(form.elements, function (field) {
+            if (!field.name || field.type === "submit" || field.type === "button") {
+              return;
+            }
+
+            field.value = "";
+            field.dispatchEvent(new Event("input", { bubbles: true }));
+            field.dispatchEvent(new Event("change", { bubbles: true }));
+          });
+        }
+
+        function connectRenderedForm() {
+          var forms = Array.prototype.slice.call(document.querySelectorAll("form"));
+          forms.forEach(function (form) {
+            if (!getContactForm(form)) {
+              return;
+            }
+
+            var formId = getFormspreeFormId();
+            form.method = "POST";
+            form.action = formId ? "https://formspree.io/f/" + formId : "";
+
+            if (!formId) {
+              setStatus(form, "Contact form is not connected yet. Please email me directly.", false);
+            }
+          });
+        }
+
+        document.addEventListener("submit", function (event) {
+          var form = getContactForm(event.target);
+          if (!form) {
+            return;
+          }
+
+          event.preventDefault();
+          event.stopImmediatePropagation();
+
+          var formId = getFormspreeFormId();
+          if (!formId) {
+            setStatus(form, "Contact form is not connected yet. Please email me directly.", false);
+            return;
+          }
+
+          var submitButton = event.submitter || form.querySelector("button[type='submit'], input[type='submit']");
+          var previousButtonMarkup = submitButton ? submitButton.innerHTML : "";
+
+          if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = "Sending...";
+          }
+
+          fetch("https://formspree.io/f/" + formId, {
+            method: "POST",
+            body: new FormData(form),
+            headers: {
+              Accept: "application/json"
+            }
+          })
+            .then(function (response) {
+              if (!response.ok) {
+                throw new Error("Formspree request failed");
+              }
+
+              setStatus(form, "Thanks, your message has been sent. I’ll get back to you as soon as possible.", true);
+              clearFormFields(form);
+            })
+            .catch(function () {
+              setStatus(
+                form,
+                "Something went wrong. Please email me directly at " + directEmail + ".",
+                false,
+                true
+              );
+            })
+            .finally(function () {
+              if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.innerHTML = previousButtonMarkup || "Send Message";
+              }
+            });
+        }, true);
+
+        connectRenderedForm();
+        new MutationObserver(connectRenderedForm).observe(document.body, {
+          childList: true,
+          subtree: true
+        });
+      })();
+    </script>
   </body>
 
 <!-- Mirrored from victornwoke.com/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 09 Nov 2025 00:03:23 GMT -->

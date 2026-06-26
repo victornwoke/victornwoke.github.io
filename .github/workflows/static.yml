@@ -33,6 +33,15 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
+      - name: Inject Formspree form ID
+        env:
+          FORMSPREE_FORM_ID: ${{ vars.VITE_FORMSPREE_PORTFOLIO_FORM_ID }}
+        run: |
+          if [ -z "$FORMSPREE_FORM_ID" ]; then
+            echo "::warning::VITE_FORMSPREE_PORTFOLIO_FORM_ID is not set. The contact form fallback will remain visible."
+          else
+            sed -i "s/formspreeFormId: \"YOUR_FORM_ID\"/formspreeFormId: \"$FORMSPREE_FORM_ID\"/" index.html
+          fi
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
