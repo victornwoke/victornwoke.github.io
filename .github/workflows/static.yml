@@ -35,8 +35,10 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Inject Formspree form ID
         env:
-          FORMSPREE_FORM_ID: ${{ vars.VITE_FORMSPREE_PORTFOLIO_FORM_ID }}
+          FORMSPREE_FORM_ID_VAR: ${{ vars.VITE_FORMSPREE_PORTFOLIO_FORM_ID }}
+          FORMSPREE_FORM_ID_SECRET: ${{ secrets.VITE_FORMSPREE_PORTFOLIO_FORM_ID }}
         run: |
+          export FORMSPREE_FORM_ID="${FORMSPREE_FORM_ID_VAR:-$FORMSPREE_FORM_ID_SECRET}"
           if [ -z "$FORMSPREE_FORM_ID" ]; then
             echo "::warning::VITE_FORMSPREE_PORTFOLIO_FORM_ID is not set. The contact form fallback will remain visible."
           else
@@ -45,11 +47,19 @@ jobs:
               const rawValue = process.env.FORMSPREE_FORM_ID.trim();
               const formId = rawValue.replace(/^https:\/\/formspree\.io\/f\//, "").replace(/^\/f\//, "");
               const html = fs.readFileSync("index.html", "utf8");
+              if (!html.includes("formspreeFormId: \"YOUR_FORM_ID\"")) {
+                throw new Error("Formspree placeholder was not found in index.html");
+              }
               fs.writeFileSync(
                 "index.html",
                 html.replace("formspreeFormId: \"YOUR_FORM_ID\"", `formspreeFormId: ${JSON.stringify(formId)}`)
               );
+              console.log(`Injected Formspree form ID ending in ${formId.slice(-4)}.`);
             '
+            if grep -q 'formspreeFormId: "YOUR_FORM_ID"' index.html; then
+              echo "::error::Formspree placeholder was not replaced."
+              exit 1
+            fi
           fi
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
